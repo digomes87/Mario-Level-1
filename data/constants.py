@@ -26,6 +26,7 @@ BLACK        = (  0,   0,   0)
 NEAR_BLACK    = ( 19,  15,  48)
 COMBLUE      = (233, 232, 255)
 GOLD         = (255, 215,   0)
+BROWN        = (139,  69,  19)
 
 BGCOLOR = WHITE
 

@@ -1,11 +1,14 @@
 from __future__ import division
 
+import logging
 import pygame as pg
 
 from .. import constants as c
 from .. import game_sound, setup, tools
 from ..components import (bricks, castle_flag, checkpoint, coin_box, collider,
                           enemies, flagpole, info, mario, score)
+from ..map_logger import map_logger
+from ..logging_config import setup_game_logging
 
 
 class Level2(tools._State):
@@ -20,8 +23,17 @@ class Level2(tools._State):
 
     def startup(self, current_time, persist):
         """Called when the State object is created"""
+        # Configurar sistema de logging
+        setup_game_logging()
+        
+        logger = logging.getLogger(__name__)
+        logger.info("=== LEVEL 2 STARTUP INICIADO ===")
+        
+        # Inicializar sistema de mapeamento
+        map_logger.log_level_setup("LEVEL2")
+        
         try:
-            print("DEBUG: Level2 startup iniciado")
+            logger.debug("Inicializando variáveis básicas do Level2")
             self.game_info = persist
             self.persist = self.game_info
             self.game_info[c.CURRENT_TIME] = current_time
@@ -35,38 +47,74 @@ class Level2(tools._State):
             self.flag_score_total = 0
 
             self.moving_score_list = []
-            print("DEBUG: Criando OverheadInfo")
+            
+            logger.debug("Criando OverheadInfo display")
             self.overhead_info_display = info.OverheadInfo(self.game_info, c.LEVEL)
-            print("DEBUG: Criando Sound manager")
+            
+            logger.debug("Criando Sound manager")
             self.sound_manager = game_sound.Sound(self.overhead_info_display)
 
-            print("DEBUG: Setup background")
+            logger.debug("Configurando background")
             self.setup_background()
-            print("DEBUG: Setup ground")
+            
+            logger.debug("Configurando ground (chão)")
             self.setup_ground()
-            print("DEBUG: Setup pipes")
+            map_logger.log_sprite_group("GROUND_GROUP", self.ground_group)
+            
+            logger.debug("Configurando pipes (canos)")
             self.setup_pipes()
-            print("DEBUG: Setup steps")
+            map_logger.log_sprite_group("PIPE_GROUP", self.pipe_group)
+            
+            logger.debug("Configurando steps (escadas)")
             self.setup_steps()
-            print("DEBUG: Setup bricks")
+            map_logger.log_sprite_group("STEP_GROUP", self.step_group)
+            
+            logger.debug("Configurando bricks (tijolos)")
             self.setup_bricks()
-            print("DEBUG: Setup coin boxes")
+            map_logger.log_sprite_group("BRICK_GROUP", self.brick_group)
+            
+            logger.debug("Configurando coin boxes (caixas de moedas)")
             self.setup_coin_boxes()
-            print("DEBUG: Setup flag pole")
+            map_logger.log_sprite_group("COIN_BOX_GROUP", self.coin_box_group)
+            
+            logger.debug("Configurando flag pole (mastro da bandeira)")
             self.setup_flag_pole()
-            print("DEBUG: Setup enemies")
+            
+            logger.debug("Configurando enemies (inimigos)")
             self.setup_enemies()
-            print("DEBUG: Setup mario")
+            
+            logger.debug("Configurando mario")
             self.setup_mario()
-            print("DEBUG: Setup checkpoints")
+            
+            logger.debug("Configurando checkpoints")
             self.setup_checkpoints()
-            print("DEBUG: Setup sprite groups")
+            
+            logger.debug("Configurando sprite groups")
             self.setup_spritegroups()
-            print("DEBUG: Level2 startup concluído com sucesso")
+            map_logger.log_sprite_group("ENEMY_GROUP", self.enemy_group)
+            
+            # Gerar resumo do mapeamento
+            map_logger.generate_map_summary()
+            
+            logger.info("=== LEVEL 2 STARTUP CONCLUÍDO COM SUCESSO ===")
+            
         except Exception as e:
-            print(f"ERRO no Level2 startup: {e}")
+            logger.error("=== ERRO CRÍTICO NO LEVEL 2 STARTUP ===")
+            logger.error(f"Tipo do erro: {type(e).__name__}")
+            logger.error(f"Mensagem do erro: {str(e)}")
+            logger.error("Traceback completo:")
             import traceback
+            logger.error(traceback.format_exc())
+            
+            # Print para console também
+            print(f"\n{'='*50}")
+            print("ERRO CRÍTICO NO LEVEL 2 STARTUP!")
+            print(f"{'='*50}")
+            print(f"Erro: {type(e).__name__}: {str(e)}")
+            print("\nTraceback:")
             traceback.print_exc()
+            print(f"{'='*50}\n")
+            
             raise
 
     def setup_background(self):
@@ -92,33 +140,29 @@ class Level2(tools._State):
 
     def setup_ground(self):
         """Creates collideable, invisible rectangles over top of the ground for sprites to walk on"""
-        # Layout de chão mais complexo com gaps estratégicos
-        ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT, 1800, 60)
-        ground_rect2 = collider.Collider(2000, c.GROUND_HEIGHT, 1200, 60)
-        ground_rect3 = collider.Collider(3400, c.GROUND_HEIGHT, 1500, 60)
-        ground_rect4 = collider.Collider(5100, c.GROUND_HEIGHT, 1800, 60)
-        ground_rect5 = collider.Collider(7200, c.GROUND_HEIGHT, 2000, 60)
+        # Layout de chão contínuo sem gaps para evitar que Mario caia
+        ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT, 1800, 60, 'ground_section_1')
+        ground_rect2 = collider.Collider(1800, c.GROUND_HEIGHT, 1400, 60, 'ground_section_2')  # Conecta com section_1
+        ground_rect3 = collider.Collider(3200, c.GROUND_HEIGHT, 1700, 60, 'ground_section_3')  # Conecta com section_2
+        ground_rect4 = collider.Collider(4900, c.GROUND_HEIGHT, 2000, 60, 'ground_section_4')  # Conecta com section_3
+        ground_rect5 = collider.Collider(6900, c.GROUND_HEIGHT, 2300, 60, 'ground_section_5')  # Conecta com section_4
 
         self.ground_group = pg.sprite.Group(
             ground_rect1, ground_rect2, ground_rect3, ground_rect4, ground_rect5
         )
 
     def setup_pipes(self):
-        """Create collideable rects for all the pipes - More pipes for underground theme"""
-        # Mais pipes com alturas variadas para tema subterrâneo
-        pipe1 = collider.Collider(800, 452, 83, 82)  # Pipe baixo
-        pipe2 = collider.Collider(1200, 366, 83, 170)  # Pipe médio
-        pipe3 = collider.Collider(1600, 280, 83, 256)  # Pipe alto
-        pipe4 = collider.Collider(2200, 409, 83, 140)  # Pipe médio
-        pipe5 = collider.Collider(2800, 452, 83, 82)  # Pipe baixo
-        pipe6 = collider.Collider(3600, 366, 83, 170)  # Pipe médio
-        pipe7 = collider.Collider(4200, 280, 83, 256)  # Pipe alto
-        pipe8 = collider.Collider(5400, 452, 83, 82)  # Pipe baixo
-        pipe9 = collider.Collider(6000, 409, 83, 140)  # Pipe médio
-        pipe10 = collider.Collider(7400, 452, 83, 82)  # Pipe baixo
+        """Create collideable rects for all the pipes - Aligned with Level 1 background"""
+        # Ajustando posições para corresponder ao background do Level 1
+        pipe1 = collider.Collider(1202, 452, 83, 82, 'pipe_1')  # Pipe pequeno
+        pipe2 = collider.Collider(1631, 409, 83, 140, 'pipe_2')  # Pipe médio
+        pipe3 = collider.Collider(1973, 366, 83, 170, 'pipe_3')  # Pipe alto
+        pipe4 = collider.Collider(2445, 366, 83, 170, 'pipe_4')  # Pipe alto
+        pipe5 = collider.Collider(6989, 452, 83, 82, 'pipe_5')  # Pipe pequeno
+        pipe6 = collider.Collider(7675, 452, 83, 82, 'pipe_6')  # Pipe pequeno
 
         self.pipe_group = pg.sprite.Group(
-            pipe1, pipe2, pipe3, pipe4, pipe5, pipe6, pipe7, pipe8, pipe9, pipe10
+            pipe1, pipe2, pipe3, pipe4, pipe5, pipe6
         )
 
     def setup_steps(self):
@@ -469,35 +513,76 @@ class Level2(tools._State):
 
     def update_all_sprites(self, keys):
         """Updates all sprites on the screen"""
+        logger = logging.getLogger(__name__)
+        
         try:
+            logger.debug("Atualizando Mario...")
             self.mario.update(keys, self.game_info, self.powerup_group)
+            
+            logger.debug("Atualizando moving scores...")
             for score in self.moving_score_list:
                 score.update(self.moving_score_list, self.game_info)
             
+            logger.debug("Atualizando flag pole group...")
             self.flag_pole_group.update()
+            
+            logger.debug("Verificando checkpoints...")
             self.check_points_check()
-            self.enemy_group.update(self.game_info, self.powerup_group)
-            self.sprites_about_to_die_group.update(self.game_info, self.powerup_group)
-            self.shell_group.update(self.game_info, self.powerup_group)
+            
+            logger.debug("Atualizando enemy group...")
+            self.enemy_group.update(self.game_info)
+            
+            logger.debug("Atualizando sprites about to die group...")
+            self.sprites_about_to_die_group.update(self.game_info, self.viewport)
+            
+            logger.debug("Atualizando shell group...")
+            self.shell_group.update(self.game_info)
+            
+            logger.debug("Atualizando brick group...")
             self.brick_group.update()
+            
+            logger.debug("Atualizando coin box group...")
             self.coin_box_group.update(self.game_info)
-            self.powerup_group.update(self.game_info, self.powerup_group)
-            self.coin_group.update(self.game_info)
+            
+            logger.debug("Atualizando powerup group...")
+            self.powerup_group.update(self.game_info, self.viewport)
+            
+            logger.debug("Atualizando coin group...")
+            self.coin_group.update(self.game_info, self.viewport)
+            
+            logger.debug("Atualizando brick pieces group...")
             self.brick_pieces_group.update()
             
+            logger.debug("Ajustando posições dos sprites...")
             self.adjust_sprite_positions()
+            
+            logger.debug("Verificando estado de transição do Mario...")
             self.check_if_mario_in_transition_state()
+            
+            logger.debug("Verificando morte do Mario...")
             self.check_for_mario_death()
+            
+            logger.debug("Atualizando viewport...")
             self.update_viewport()
+            
+            logger.debug("Atualizando overhead info display...")
             self.overhead_info_display.update(self.game_info, self.mario)
-
-            if self.mario.dead:
-                self.play_death_song()
+            
         except Exception as e:
-            print(f"ERRO no Level2.update_all_sprites(): {e}")
-            print(f"Mario morto: {self.mario.dead}, Mario no castelo: {self.mario.in_castle}")
+            logger.error("=== ERRO NO UPDATE_ALL_SPRITES ===")
+            logger.error(f"Erro: {type(e).__name__}: {str(e)}")
+            logger.error("Traceback:")
             import traceback
+            logger.error(traceback.format_exc())
+            
+            print(f"\n{'='*50}")
+            print("ERRO NO UPDATE_ALL_SPRITES!")
+            print(f"{'='*50}")
+            print(f"Erro: {type(e).__name__}: {str(e)}")
+            print("\nTraceback:")
             traceback.print_exc()
+            print(f"{'='*50}\n")
+            
             raise
 
 
@@ -542,12 +627,22 @@ class Level2(tools._State):
         self.adjust_powerup_position()
 
     def adjust_mario_position(self):
-        """Adjusts Mario's position based on collisions"""
+        """Adjusts Mario's position based on his x, y velocities and
+        potential collisions"""
+        self.last_x_position = self.mario.rect.right
+        self.mario.rect.x += round(self.mario.x_vel)
         self.check_mario_x_collisions()
-        self.check_mario_y_collisions()
+
+        if self.mario.in_transition_state == False:
+            self.mario.rect.y += round(self.mario.y_vel)
+            self.check_mario_y_collisions()
 
         if self.mario.rect.x < (self.viewport.x + 5):
-            self.mario.rect.x = self.viewport.x + 5
+            self.mario.rect.x = (self.viewport.x + 5)
+        
+        # Log da posição do Mario e verificação de obstáculos próximos
+        map_logger.log_mario_position(self.mario.rect.x, self.mario.rect.y, self.mario.state)
+        map_logger.check_mario_near_obstacles(self.mario.rect)
 
     def check_mario_x_collisions(self):
         """Checks for Mario's horizontal collisions"""
@@ -560,12 +655,16 @@ class Level2(tools._State):
         coin = pg.sprite.spritecollideany(self.mario, self.coin_group)
 
         if coin_box:
+            map_logger.log_collision("Mario", "coin_box", self.mario.rect, coin_box.rect, "horizontal")
             self.adjust_mario_for_x_collisions(coin_box)
 
         elif brick:
+            map_logger.log_collision("Mario", "brick", self.mario.rect, brick.rect, "horizontal")
             self.adjust_mario_for_x_collisions(brick)
 
         elif collider:
+            collider_name = getattr(collider, 'name', 'unknown_collider')
+            map_logger.log_collision("Mario", collider_name, self.mario.rect, collider.rect, "horizontal")
             self.adjust_mario_for_x_collisions(collider)
 
         elif enemy:
@@ -756,15 +855,19 @@ class Level2(tools._State):
         # Check for coin box collision
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
         if coin_box:
+            map_logger.log_collision("Mario", "coin_box", self.mario.rect, coin_box.rect, "vertical")
             self.adjust_mario_for_y_coin_box_collisions(coin_box)
 
         # Check for brick collision
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         if brick:
+            map_logger.log_collision("Mario", "brick", self.mario.rect, brick.rect, "vertical")
             self.adjust_mario_for_y_brick_collisions(brick)
 
         # Check for ground, step, or pipe collision
         if ground_step_or_pipe:
+            collider_name = getattr(ground_step_or_pipe, 'name', 'unknown_ground_step_pipe')
+            map_logger.log_collision("Mario", collider_name, self.mario.rect, ground_step_or_pipe.rect, "vertical")
             self.adjust_mario_for_y_ground_pipe_collisions(ground_step_or_pipe)
 
         # Check for enemy collision
@@ -797,12 +900,10 @@ class Level2(tools._State):
                 if coin_box.contents == c.COIN:
                     setup.SFX["coin"].play()
                     self.game_info[c.SCORE] += 200
-                    coin_box.start_bump(self.moving_score_list, 200, self.coin_group)
+                    coin_box.start_bump(self.moving_score_list)
                 else:
                     setup.SFX["powerup_appears"].play()
-                    coin_box.start_bump(
-                        self.moving_score_list, 1000, self.powerup_group
-                    )
+                    coin_box.start_bump(self.moving_score_list)
 
                 self.game_info[c.COIN_TOTAL] += 1
                 self.moving_score_list.append(
@@ -839,18 +940,12 @@ class Level2(tools._State):
                         if brick.contents == c.COIN:
                             setup.SFX["coin"].play()
                             self.game_info[c.SCORE] += 200
-                            brick.start_bump(
-                                self.moving_score_list, 200, self.coin_group
-                            )
+                            brick.start_bump(self.moving_score_list)
                         elif brick.contents == c.SIXCOINS:
                             setup.SFX["coin"].play()
-                            brick.start_bump(
-                                self.moving_score_list, 200, self.coin_group
-                            )
+                            brick.start_bump(self.moving_score_list)
                         else:
-                            brick.start_bump(
-                                self.moving_score_list, 1000, self.powerup_group
-                            )
+                            brick.start_bump(self.moving_score_list)
                     else:
                         brick.start_bump(self.moving_score_list)
 

@@ -1,6 +1,7 @@
 __author__ = 'justinarmstrong'
 
 import os
+import logging
 import pygame as pg
 
 keybinding = {
@@ -42,11 +43,28 @@ class Control(object):
         self.state.update(self.screen, self.keys, self.current_time)
 
     def flip_state(self):
-        previous, self.state_name = self.state_name, self.state.next
-        persist = self.state.cleanup()
-        self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, persist)
-        self.state.previous = previous
+        logger = logging.getLogger(__name__)
+        logger.info(f"State transition: {self.state_name} -> {self.state.next}")
+        
+        try:
+            previous, self.state_name = self.state_name, self.state.next
+            logger.debug(f"Cleaning up previous state: {previous}")
+            persist = self.state.cleanup()
+            logger.debug(f"Persist data: {persist}")
+            
+            logger.debug(f"Loading new state: {self.state_name}")
+            self.state = self.state_dict[self.state_name]
+            
+            logger.debug(f"Starting up new state: {self.state_name}")
+            self.state.startup(self.current_time, persist)
+            self.state.previous = previous
+            
+            logger.info(f"State transition completed successfully: {previous} -> {self.state_name}")
+            
+        except Exception as e:
+            logger.error(f"ERROR during state transition from {previous} to {self.state_name}")
+            logger.error(f"Error: {type(e).__name__}: {str(e)}")
+            raise
 
 
     def event_loop(self):

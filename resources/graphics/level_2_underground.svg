@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8000" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Underground Background -->
+  <defs>
+    <linearGradient id="undergroundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    
+    <pattern id="brickPattern" patternUnits="userSpaceOnUse" width="40" height="20">
+      <rect width="40" height="20" fill="#8B4513"/>
+      <rect x="0" y="0" width="20" height="10" fill="#A0522D"/>
+      <rect x="20" y="10" width="20" height="10" fill="#A0522D"/>
+      <rect x="0" y="0" width="40" height="20" fill="none" stroke="#654321" stroke-width="1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Main Background -->
+  <rect width="8000" height="600" fill="url(#undergroundGradient)"/>
+  
+  <!-- Ground -->
+  <rect x="0" y="540" width="8000" height="60" fill="url(#brickPattern)"/>
+  
+  <!-- Underground Pipes - Distributed throughout the level -->
+  <!-- Pipe 1 - Small -->
+  <g id="pipe1">
+    <rect x="800" y="458" width="80" height="82" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="795" y="453" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="840" cy="460" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Pipe 2 - Medium -->
+  <g id="pipe2">
+    <rect x="1400" y="370" width="80" height="170" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="1395" y="365" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="1440" cy="372" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Pipe 3 - Large -->
+  <g id="pipe3">
+    <rect x="2000" y="284" width="80" height="256" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="1995" y="279" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="2040" cy="286" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Pipe 4 - Medium -->
+  <g id="pipe4">
+    <rect x="2800" y="400" width="80" height="140" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="2795" y="395" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="2840" cy="402" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Underground Platforms -->
+  <rect x="1200" y="480" width="160" height="20" fill="url(#brickPattern)"/>
+  <rect x="1800" y="420" width="120" height="20" fill="url(#brickPattern)"/>
+  <rect x="2600" y="360" width="140" height="20" fill="url(#brickPattern)"/>
+  
+  <!-- Pipe 5 - Small -->
+  <g id="pipe5">
+    <rect x="3600" y="458" width="80" height="82" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="3595" y="453" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="3640" cy="460" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Underground Steps -->
+  <rect x="4200" y="500" width="40" height="40" fill="url(#brickPattern)"/>
+  <rect x="4240" y="460" width="40" height="80" fill="url(#brickPattern)"/>
+  <rect x="4280" y="420" width="40" height="120" fill="url(#brickPattern)"/>
+  <rect x="4320" y="380" width="40" height="160" fill="url(#brickPattern)"/>
+  
+  <!-- Pipe 6 - Large -->
+  <g id="pipe6">
+    <rect x="5000" y="284" width="80" height="256" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="4995" y="279" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="5040" cy="286" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- More Underground Platforms -->
+  <rect x="5400" y="440" width="200" height="20" fill="url(#brickPattern)"/>
+  <rect x="6000" y="380" width="160" height="20" fill="url(#brickPattern)"/>
+  
+  <!-- Pipe 7 - Medium -->
+  <g id="pipe7">
+    <rect x="6800" y="400" width="80" height="140" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="6795" y="395" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="6840" cy="402" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Final Pipe 8 - Small -->
+  <g id="pipe8">
+    <rect x="7400" y="458" width="80" height="82" fill="#228B22" stroke="#006400" stroke-width="2"/>
+    <rect x="7395" y="453" width="90" height="15" fill="#32CD32" stroke="#006400" stroke-width="2"/>
+    <ellipse cx="7440" cy="460" rx="45" ry="8" fill="#32CD32"/>
+  </g>
+  
+  <!-- Underground Decorations -->
+  <!-- Stalactites -->
+  <polygon points="500,0 520,0 510,60" fill="#696969"/>
+  <polygon points="1000,0 1020,0 1010,80" fill="#696969"/>
+  <polygon points="1600,0 1620,0 1610,50" fill="#696969"/>
+  <polygon points="2200,0 2220,0 2210,70" fill="#696969"/>
+  <polygon points="3000,0 3020,0 3010,90" fill="#696969"/>
+  <polygon points="4000,0 4020,0 4010,60" fill="#696969"/>
+  <polygon points="5500,0 5520,0 5510,75" fill="#696969"/>
+  <polygon points="6500,0 6520,0 6510,55" fill="#696969"/>
+  <polygon points="7200,0 7220,0 7210,85" fill="#696969"/>
+  
+  <!-- Underground Crystals -->
+  <polygon points="300,520 320,520 310,500" fill="#9370DB"/>
+  <polygon points="900,520 920,520 910,500" fill="#4169E1"/>
+  <polygon points="1700,520 1720,520 1710,500" fill="#9370DB"/>
+  <polygon points="2500,520 2520,520 2510,500" fill="#4169E1"/>
+  <polygon points="3300,520 3320,520 3310,500" fill="#9370DB"/>
+  <polygon points="4500,520 4520,520 4510,500" fill="#4169E1"/>
+  <polygon points="5800,520 5820,520 5810,500" fill="#9370DB"/>
+  <polygon points="6600,520 6620,520 6610,500" fill="#4169E1"/>
+  <polygon points="7600,520 7620,520 7610,500" fill="#9370DB"/>
+</svg>
