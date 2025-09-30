@@ -119,8 +119,8 @@ class Level2(tools._State):
 
     def setup_background(self):
         """Sets the background image, rect and scales it to the correct proportions"""
-        # Reutiliza o mesmo background do level1 para manter consistência visual
-        self.background = setup.GFX["level_1"]
+        # Usa o novo background underground específico do Level 2
+        self.background = setup.GFX["level_2"]
         self.back_rect = self.background.get_rect()
         self.background = pg.transform.scale(
             self.background,
@@ -140,216 +140,160 @@ class Level2(tools._State):
 
     def setup_ground(self):
         """Creates collideable, invisible rectangles over top of the ground for sprites to walk on"""
-        # Layout de chão contínuo sem gaps para evitar que Mario caia
-        ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT, 1800, 60, 'ground_section_1')
-        ground_rect2 = collider.Collider(1800, c.GROUND_HEIGHT, 1400, 60, 'ground_section_2')  # Conecta com section_1
-        ground_rect3 = collider.Collider(3200, c.GROUND_HEIGHT, 1700, 60, 'ground_section_3')  # Conecta com section_2
-        ground_rect4 = collider.Collider(4900, c.GROUND_HEIGHT, 2000, 60, 'ground_section_4')  # Conecta com section_3
-        ground_rect5 = collider.Collider(6900, c.GROUND_HEIGHT, 2300, 60, 'ground_section_5')  # Conecta com section_4
+        # Layout de chão contínuo para o tema underground (mais compacto)
+        ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT, 3392, 60, 'underground_ground_section')
 
-        self.ground_group = pg.sprite.Group(
-            ground_rect1, ground_rect2, ground_rect3, ground_rect4, ground_rect5
-        )
+        self.ground_group = pg.sprite.Group(ground_rect1)
 
     def setup_pipes(self):
-        """Create collideable rects for all the pipes - Aligned with Level 1 background"""
-        # Ajustando posições para corresponder ao background do Level 1
-        pipe1 = collider.Collider(1202, 452, 83, 82, 'pipe_1')  # Pipe pequeno
-        pipe2 = collider.Collider(1631, 409, 83, 140, 'pipe_2')  # Pipe médio
-        pipe3 = collider.Collider(1973, 366, 83, 170, 'pipe_3')  # Pipe alto
-        pipe4 = collider.Collider(2445, 366, 83, 170, 'pipe_4')  # Pipe alto
-        pipe5 = collider.Collider(6989, 452, 83, 82, 'pipe_5')  # Pipe pequeno
-        pipe6 = collider.Collider(7675, 452, 83, 82, 'pipe_6')  # Pipe pequeno
+        """Create collideable rects for all the pipes - Underground theme with unique positioning"""
+        # Posições dos pipes correspondentes ao novo background underground
+        pipe1 = collider.Collider(448, 272, 64, 128, 'underground_pipe_1')  # Primeiro pipe
+        pipe2 = collider.Collider(896, 304, 64, 96, 'underground_pipe_2')   # Segundo pipe (menor)
+        pipe3 = collider.Collider(1344, 240, 64, 160, 'underground_pipe_3') # Terceiro pipe (alto)
+        pipe4 = collider.Collider(1792, 288, 64, 112, 'underground_pipe_4') # Quarto pipe
+        pipe5 = collider.Collider(2240, 256, 64, 144, 'underground_pipe_5') # Quinto pipe
+        pipe6 = collider.Collider(2688, 272, 64, 128, 'underground_pipe_6') # Sexto pipe
 
         self.pipe_group = pg.sprite.Group(
             pipe1, pipe2, pipe3, pipe4, pipe5, pipe6
         )
 
     def setup_steps(self):
-        """Create collideable rects for all the steps - More complex platform layout"""
-        # Plataformas em múltiplos níveis para maior complexidade
-        # Plataformas baixas
-        step1 = collider.Collider(1000, 495, 40, 40)
-        step2 = collider.Collider(1040, 495, 40, 40)
-        step3 = collider.Collider(1080, 495, 40, 40)
-
-        # Plataformas médias
-        step4 = collider.Collider(1400, 400, 40, 40)
-        step5 = collider.Collider(1440, 400, 40, 40)
-        step6 = collider.Collider(1480, 360, 40, 40)
-        step7 = collider.Collider(1520, 320, 40, 40)
-
-        # Plataformas altas
-        step8 = collider.Collider(2400, 320, 40, 40)
-        step9 = collider.Collider(2440, 280, 40, 40)
-        step10 = collider.Collider(2480, 240, 40, 40)
-        step11 = collider.Collider(2520, 200, 40, 40)
-
-        # Mais plataformas espalhadas
-        step12 = collider.Collider(3200, 400, 40, 40)
-        step13 = collider.Collider(3240, 360, 40, 40)
-        step14 = collider.Collider(3280, 320, 40, 40)
-
-        step15 = collider.Collider(4600, 450, 40, 40)
-        step16 = collider.Collider(4640, 410, 40, 40)
-        step17 = collider.Collider(4680, 370, 40, 40)
-        step18 = collider.Collider(4720, 330, 40, 40)
-
-        # Plataformas finais
-        step19 = collider.Collider(6400, 400, 40, 40)
-        step20 = collider.Collider(6440, 360, 40, 40)
-        step21 = collider.Collider(6480, 320, 40, 40)
-        step22 = collider.Collider(6520, 280, 40, 40)
+        """Create collideable rects for all the steps - Underground platforms matching background"""
+        # Plataformas correspondentes ao background underground criado
+        # Primeira plataforma (após primeiro pipe)
+        platform1 = collider.Collider(640, 320, 128, 32, 'underground_platform_1')
+        
+        # Segunda plataforma (área intermediária)
+        platform2 = collider.Collider(1088, 280, 96, 32, 'underground_platform_2')
+        
+        # Terceira plataforma (área central)
+        platform3 = collider.Collider(1536, 240, 160, 32, 'underground_platform_3')
+        
+        # Quarta plataforma (após pipes centrais)
+        platform4 = collider.Collider(1984, 300, 128, 32, 'underground_platform_4')
+        
+        # Quinta plataforma (área final)
+        platform5 = collider.Collider(2432, 260, 96, 32, 'underground_platform_5')
+        
+        # Plataformas adicionais para criar caminhos alternativos
+        # Plataformas baixas para iniciantes
+        step1 = collider.Collider(320, 360, 64, 16, 'low_step_1')
+        step2 = collider.Collider(768, 350, 64, 16, 'low_step_2')
+        step3 = collider.Collider(1216, 340, 64, 16, 'low_step_3')
+        
+        # Plataformas altas para desafio
+        high_step1 = collider.Collider(1120, 200, 96, 16, 'high_step_1')
+        high_step2 = collider.Collider(1600, 180, 96, 16, 'high_step_2')
+        high_step3 = collider.Collider(2080, 220, 96, 16, 'high_step_3')
+        
+        # Plataformas de conexão
+        connect1 = collider.Collider(1280, 320, 48, 16, 'connect_platform_1')
+        connect2 = collider.Collider(1840, 280, 48, 16, 'connect_platform_2')
+        connect3 = collider.Collider(2320, 300, 48, 16, 'connect_platform_3')
 
         self.step_group = pg.sprite.Group(
-            step1,
-            step2,
-            step3,
-            step4,
-            step5,
-            step6,
-            step7,
-            step8,
-            step9,
-            step10,
-            step11,
-            step12,
-            step13,
-            step14,
-            step15,
-            step16,
-            step17,
-            step18,
-            step19,
-            step20,
-            step21,
-            step22,
+            platform1, platform2, platform3, platform4, platform5,
+            step1, step2, step3,
+            high_step1, high_step2, high_step3,
+            connect1, connect2, connect3
         )
 
     def setup_bricks(self):
-        """Creates all the breakable bricks for the level - Strategic placement"""
+        """Creates all the breakable bricks for the level - Underground theme strategic placement"""
         self.coin_group = pg.sprite.Group()
         self.powerup_group = pg.sprite.Group()
         self.brick_pieces_group = pg.sprite.Group()
 
-        # Grupos de tijolos estrategicamente posicionados
-        # Início da fase
-        brick1 = bricks.Brick(600, 365)
-        brick2 = bricks.Brick(643, 365)
-        brick3 = bricks.Brick(686, 365, c.COIN, self.coin_group)
-        brick4 = bricks.Brick(729, 365)
+        # Tijolos estrategicamente posicionados para o tema underground
+        # Área inicial - próximo ao primeiro pipe
+        brick1 = bricks.Brick(380, 320)
+        brick2 = bricks.Brick(423, 320, c.COIN, self.coin_group)
+        brick3 = bricks.Brick(466, 320)
 
-        # Área das plataformas médias
-        brick5 = bricks.Brick(1300, 280, c.MUSHROOM, self.powerup_group)
-        brick6 = bricks.Brick(1343, 280)
-        brick7 = bricks.Brick(1386, 280, c.COIN, self.coin_group)
+        # Área da primeira plataforma
+        brick4 = bricks.Brick(580, 280, c.MUSHROOM, self.powerup_group)
+        brick5 = bricks.Brick(623, 280)
+        brick6 = bricks.Brick(666, 280, c.COIN, self.coin_group)
+        brick7 = bricks.Brick(709, 280)
 
-        # Seção elevada
-        brick8 = bricks.Brick(2300, 200)
-        brick9 = bricks.Brick(2343, 200, c.SIXCOINS, self.coin_group)
-        brick10 = bricks.Brick(2386, 200)
-        brick11 = bricks.Brick(2429, 200, c.STAR, self.powerup_group)
-        brick12 = bricks.Brick(2472, 200)
+        # Área entre pipes - seção elevada
+        brick8 = bricks.Brick(1000, 200)
+        brick9 = bricks.Brick(1043, 200, c.COIN, self.coin_group)
+        brick10 = bricks.Brick(1086, 200)
+        brick11 = bricks.Brick(1129, 200, c.SIXCOINS, self.coin_group)
+        brick12 = bricks.Brick(1172, 200)
 
-        # Área intermediária
-        brick13 = bricks.Brick(3500, 365)
-        brick14 = bricks.Brick(3543, 365, c.COIN, self.coin_group)
-        brick15 = bricks.Brick(3586, 365)
-        brick16 = bricks.Brick(3629, 365, c.FIREFLOWER, self.powerup_group)
+        # Área da plataforma central
+        brick13 = bricks.Brick(1480, 200, c.FIREFLOWER, self.powerup_group)
+        brick14 = bricks.Brick(1523, 200)
+        brick15 = bricks.Brick(1566, 200, c.COIN, self.coin_group)
+        brick16 = bricks.Brick(1609, 200)
 
-        # Seção de pipes altos
-        brick17 = bricks.Brick(4100, 200)
-        brick18 = bricks.Brick(4143, 200, c.COIN, self.coin_group)
-        brick19 = bricks.Brick(4186, 200)
-        brick20 = bricks.Brick(4229, 200, c.COIN, self.coin_group)
-        brick21 = bricks.Brick(4272, 200)
+        # Área após pipes centrais
+        brick17 = bricks.Brick(1920, 260)
+        brick18 = bricks.Brick(1963, 260, c.COIN, self.coin_group)
+        brick19 = bricks.Brick(2006, 260)
+        brick20 = bricks.Brick(2049, 260, c.STAR, self.powerup_group)
 
-        # Área final
-        brick22 = bricks.Brick(6800, 365)
-        brick23 = bricks.Brick(6843, 365, c.COIN, self.coin_group)
-        brick24 = bricks.Brick(6886, 365)
-        brick25 = bricks.Brick(6929, 365, c.LIFE_MUSHROOM, self.powerup_group)
+        # Área final - próximo aos últimos pipes
+        brick21 = bricks.Brick(2380, 220)
+        brick22 = bricks.Brick(2423, 220, c.COIN, self.coin_group)
+        brick23 = bricks.Brick(2466, 220)
+        brick24 = bricks.Brick(2509, 220, c.LIFE_MUSHROOM, self.powerup_group)
+
+        # Tijolos suspensos para desafio extra
+        brick25 = bricks.Brick(800, 160, c.COIN, self.coin_group)
+        brick26 = bricks.Brick(1300, 140, c.COIN, self.coin_group)
+        brick27 = bricks.Brick(1800, 160, c.COIN, self.coin_group)
 
         self.brick_group = pg.sprite.Group(
-            brick1,
-            brick2,
-            brick3,
-            brick4,
-            brick5,
-            brick6,
-            brick7,
-            brick8,
-            brick9,
-            brick10,
-            brick11,
-            brick12,
-            brick13,
-            brick14,
-            brick15,
-            brick16,
-            brick17,
-            brick18,
-            brick19,
-            brick20,
-            brick21,
-            brick22,
-            brick23,
-            brick24,
-            brick25,
+            brick1, brick2, brick3, brick4, brick5, brick6, brick7,
+            brick8, brick9, brick10, brick11, brick12,
+            brick13, brick14, brick15, brick16,
+            brick17, brick18, brick19, brick20,
+            brick21, brick22, brick23, brick24,
+            brick25, brick26, brick27
         )
 
     def setup_coin_boxes(self):
-        """Creates all the coin boxes and puts them in a sprite group"""
-        # Distribuição estratégica de coin boxes
-        coin_box1 = coin_box.Coin_box(500, 365, c.COIN, self.coin_group)
-        coin_box2 = coin_box.Coin_box(900, 365, c.MUSHROOM, self.powerup_group)
-        coin_box3 = coin_box.Coin_box(1100, 365, c.COIN, self.coin_group)
-        coin_box4 = coin_box.Coin_box(1350, 200, c.COIN, self.coin_group)
-        coin_box5 = coin_box.Coin_box(2100, 365, c.FIREFLOWER, self.powerup_group)
-        coin_box6 = coin_box.Coin_box(2600, 200, c.COIN, self.coin_group)
-        coin_box7 = coin_box.Coin_box(3000, 365, c.COIN, self.coin_group)
-        coin_box8 = coin_box.Coin_box(3800, 365, c.COIN, self.coin_group)
-        coin_box9 = coin_box.Coin_box(4000, 200, c.STAR, self.powerup_group)
-        coin_box10 = coin_box.Coin_box(4800, 365, c.COIN, self.coin_group)
-        coin_box11 = coin_box.Coin_box(5600, 365, c.MUSHROOM, self.powerup_group)
-        coin_box12 = coin_box.Coin_box(6200, 365, c.COIN, self.coin_group)
-        coin_box13 = coin_box.Coin_box(6600, 280, c.COIN, self.coin_group)
-        coin_box14 = coin_box.Coin_box(7000, 365, c.COIN, self.coin_group)
+        """Creates all the coin boxes and puts them in a sprite group - Underground theme"""
+        # Distribuição estratégica de coin boxes para o tema underground
+        coin_box1 = coin_box.Coin_box(320, 320, c.COIN, self.coin_group)
+        coin_box2 = coin_box.Coin_box(520, 240, c.MUSHROOM, self.powerup_group)
+        coin_box3 = coin_box.Coin_box(720, 240, c.COIN, self.coin_group)
+        coin_box4 = coin_box.Coin_box(960, 160, c.COIN, self.coin_group)
+        coin_box5 = coin_box.Coin_box(1200, 160, c.FIREFLOWER, self.powerup_group)
+        coin_box6 = coin_box.Coin_box(1440, 160, c.COIN, self.coin_group)
+        coin_box7 = coin_box.Coin_box(1680, 140, c.COIN, self.coin_group)
+        coin_box8 = coin_box.Coin_box(1880, 220, c.COIN, self.coin_group)
+        coin_box9 = coin_box.Coin_box(2120, 180, c.STAR, self.powerup_group)
+        coin_box10 = coin_box.Coin_box(2320, 180, c.COIN, self.coin_group)
+        coin_box11 = coin_box.Coin_box(2520, 180, c.MUSHROOM, self.powerup_group)
 
         self.coin_box_group = pg.sprite.Group(
-            coin_box1,
-            coin_box2,
-            coin_box3,
-            coin_box4,
-            coin_box5,
-            coin_box6,
-            coin_box7,
-            coin_box8,
-            coin_box9,
-            coin_box10,
-            coin_box11,
-            coin_box12,
-            coin_box13,
-            coin_box14,
+            coin_box1, coin_box2, coin_box3, coin_box4, coin_box5, coin_box6,
+            coin_box7, coin_box8, coin_box9, coin_box10, coin_box11
         )
 
     def setup_flag_pole(self):
-        """Creates the flag pole at the end of the level"""
-        # Posiciona a bandeira no final da fase
-        self.flag = flagpole.Flag(8200, 100)
+        """Creates the flag pole at the end of the level - Underground theme"""
+        # Posiciona a bandeira no final da fase underground (mais próximo)
+        self.flag = flagpole.Flag(3200, 100)
 
-        pole0 = flagpole.Pole(8200, 97)
-        pole1 = flagpole.Pole(8200, 137)
-        pole2 = flagpole.Pole(8200, 177)
-        pole3 = flagpole.Pole(8200, 217)
-        pole4 = flagpole.Pole(8200, 257)
-        pole5 = flagpole.Pole(8200, 297)
-        pole6 = flagpole.Pole(8200, 337)
-        pole7 = flagpole.Pole(8200, 377)
-        pole8 = flagpole.Pole(8200, 417)
-        pole9 = flagpole.Pole(8200, 450)
+        pole0 = flagpole.Pole(3200, 97)
+        pole1 = flagpole.Pole(3200, 137)
+        pole2 = flagpole.Pole(3200, 177)
+        pole3 = flagpole.Pole(3200, 217)
+        pole4 = flagpole.Pole(3200, 257)
+        pole5 = flagpole.Pole(3200, 297)
+        pole6 = flagpole.Pole(3200, 337)
+        pole7 = flagpole.Pole(3200, 377)
+        pole8 = flagpole.Pole(3200, 417)
+        pole9 = flagpole.Pole(3200, 450)
 
-        finial = flagpole.Finial(8202, 97)
+        finial = flagpole.Finial(3202, 97)
 
         self.flag_pole_group = pg.sprite.Group(
             self.flag,
